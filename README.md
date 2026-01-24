@@ -110,87 +110,132 @@ Open WebUI should automatically detect your OpenAI API key from environment vari
 - Verify your API key has access to the models
 - Check Docker logs for API errors: `docker compose logs open-webui`
 
-### Adding Additional OpenAI Models
+### Understanding OpenAI Model Availability (Important!)
 
-If you don't see all available OpenAI models in your model selector, you can add them manually.
+**Why you may see models in Settings but not in the Chat dropdown:**
 
-**Step-by-step:**
+Open WebUI currently has a **technical limitation** regarding OpenAI model support:
 
-1. **Open Settings**
-   - Click your avatar (bottom left)
-   - Select **Settings**
+**The Technical Reality:**
 
-2. **Navigate to Models Management**
-   - Go to **Admin Settings** → **Models**
-   - Or look for **Models** in the settings menu
+1. **Open WebUI only supports the Chat Completions API** (`/v1/chat/completions`)
+   - This is the older OpenAI API endpoint
+   - Supports models like: `gpt-4`, `gpt-4-turbo`, `gpt-3.5-turbo`, `o1-preview`, `o1-mini`
 
-3. **Add New Model**
-   - Click **+ Add Model** or **New Model** button
-   - Fill in the model details:
+2. **Newer models require the Responses API**
+   - Models like `chatgpt-4o-latest`, `gpt-4.1`, `gpt-5.x` series
+   - These models are **NOT supported** by Open WebUI yet
+   - They appear in Settings → Models (global listing)
+   - But **do NOT appear** in the Chat dropdown (because they can't be used)
 
-**Recommended models to add:**
+**What you'll see:**
 
-**GPT-4o (Latest & Best)**
-- **Model ID**: `gpt-4o`
-- **Display Name**: `GPT-4o`
-- **Provider**: OpenAI
-- **Description**: Latest multimodal model, best for most tasks
+```
+Settings → Models (shows ALL known models):
+  ✓ gpt-4
+  ✓ gpt-4-turbo
+  ✓ chatgpt-4o-latest     ← Visible but NOT usable
+  ✓ gpt-4.1               ← Visible but NOT usable
+  ✓ gpt-5.2-chat-latest   ← Visible but NOT usable
 
-**GPT-4 Turbo**
-- **Model ID**: `gpt-4-turbo`
-- **Display Name**: `GPT-4 Turbo`
-- **Provider**: OpenAI
-- **Description**: Fast and powerful, good for complex tasks
+Chat Dropdown (shows ONLY Chat Completions compatible):
+  ✓ gpt-4
+  ✓ gpt-4-turbo
+  ✓ gpt-3.5-turbo
+  ✓ o1-preview (if access granted)
+  ✗ chatgpt-4o-latest     ← NOT in dropdown
+  ✗ gpt-4.1               ← NOT in dropdown
+```
 
-**O1 Preview (Reasoning Model)**
-- **Model ID**: `o1-preview`
-- **Display Name**: `O1 Preview`
-- **Provider**: OpenAI
-- **Description**: Advanced reasoning capabilities
+**Currently Usable OpenAI Models in Open WebUI:**
 
-**O1 Mini**
-- **Model ID**: `o1-mini`
-- **Display Name**: `O1 Mini`
-- **Provider**: OpenAI
-- **Description**: Faster reasoning model
+| Model | Available? | Notes |
+|-------|-----------|-------|
+| `gpt-4` | ✅ Yes | Standard GPT-4 |
+| `gpt-4-turbo` | ✅ Yes | Faster GPT-4 variant |
+| `gpt-3.5-turbo` | ✅ Yes | Fast and economical |
+| `o1-preview` | ✅ Yes (if key has access) | Reasoning model |
+| `o1-mini` | ✅ Yes (if key has access) | Faster reasoning |
+| `gpt-4o` | ⚠️ Depends | May work if using Chat Completions |
+| `chatgpt-4o-latest` | ❌ No | Requires Responses API |
+| `gpt-4.1` | ❌ No | Requires Responses API |
+| `gpt-5.x` | ❌ No | Requires Responses API |
 
-4. **Save** the model configuration
+### Workarounds to Access Newer Models
 
-5. **Refresh** the chat page or restart the container if needed:
-   ```bash
-   docker compose restart
-   ```
+If you need access to newer OpenAI models not supported by the Chat Completions API, you have these options:
 
-**Model Favorites:**
+#### Option 1: Use Our Proxy (Recommended)
 
-- Use the **⭐ (star)** icon next to models in the selector to mark favorites
-- Favorite models appear at the top of your model list
-- Useful when you have many models available
+**We provide a ready-to-use proxy solution** in the `proxy/` directory that translates between APIs.
 
-**Why are some models missing?**
+**Quick Start:**
 
-1. **API Key Permissions**: Your OpenAI API key may not have access to certain models
-   - Check limits at: https://platform.openai.com/account/limits
-   - Some models (GPT-4, O1) require approval or usage tier upgrades
+```bash
+# From the project root
+cd proxy
 
-2. **Cached Model List**: Open WebUI may have cached an old list
-   - Solution: Restart container with `docker compose restart`
+# Copy environment config
+cp ../.env .env
 
-3. **Outdated Version**: Update to the latest Open WebUI version:
-   ```bash
-   docker compose pull
-   docker compose up -d
-   ```
+# Start proxy
+docker compose up -d
 
-**Model Selection Guide:**
+# Check it's running
+curl http://localhost:8000/health
+```
+
+**Configure Open WebUI:**
+
+1. Go to **Settings** → **Connections** → **OpenAI**
+2. Click **Add Connection**
+3. Configure:
+   - **API Base URL**: `http://localhost:8000/v1`
+   - **API Key**: Your OpenAI API key
+4. Save
+5. Return to chat → Model dropdown → Newer models should now appear!
+
+**Full Documentation:** See `proxy/README.md` for complete setup, integration with main stack, and troubleshooting.
+
+#### Option 2: Use OpenRouter (Easiest)
+
+[OpenRouter](https://openrouter.ai/) provides a unified API that supports newer OpenAI models via a Chat Completions-compatible interface.
+
+**Setup:**
+
+1. Sign up at https://openrouter.ai/
+2. Get your API key
+3. In Open WebUI:
+   - Settings → Connections → Add OpenAI Connection
+   - **API URL**: `https://openrouter.ai/api/v1`
+   - **API Key**: Your OpenRouter key
+4. Models like GPT-4o, Claude, and others will appear in your dropdown
+
+**Cost:** OpenRouter adds a small markup on top of OpenAI pricing.
+
+#### Option 3: Wait for Open WebUI Update
+
+The Open WebUI team is working on Responses API support. Check:
+- GitHub Issues: https://github.com/open-webui/open-webui/issues
+- Releases: https://github.com/open-webui/open-webui/releases
+
+Update when available:
+```bash
+docker compose pull
+docker compose up -d
+```
+
+### Model Selection Guide (Currently Available Models)
 
 | Use Case | Recommended Model | Why |
 |----------|------------------|-----|
-| General tasks, coding, writing | `gpt-4o` | Best balance of speed, quality, and cost |
-| Complex reasoning, math, logic | `o1-preview` | Advanced thinking capabilities |
-| Quick responses, simple tasks | `gpt-3.5-turbo` | Fast and economical |
+| General tasks, coding, writing | `gpt-4-turbo` | Fast, capable, good balance |
+| Complex reasoning, math, logic | `o1-preview` | Advanced thinking (if available) |
+| Quick responses, simple tasks | `gpt-3.5-turbo` | Very fast and economical |
 | Long documents, analysis | `gpt-4-turbo` | Large context window |
-| Budget-friendly reasoning | `o1-mini` | Cheaper than o1-preview |
+| Budget-friendly reasoning | `o1-mini` | Cheaper reasoning (if available) |
+
+**Note:** If you have access to `o1-preview` or `o1-mini`, you may need to request access through OpenAI's usage tier system.
 
 ## RAG / Document Q&A Setup
 
