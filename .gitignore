@@ -1,0 +1,19 @@
+# Environment variables (contains API keys)
+.env
+
+# Backups
+*.tar.gz
+backup/
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log

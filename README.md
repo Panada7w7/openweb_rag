@@ -110,6 +110,88 @@ Open WebUI should automatically detect your OpenAI API key from environment vari
 - Verify your API key has access to the models
 - Check Docker logs for API errors: `docker compose logs open-webui`
 
+### Adding Additional OpenAI Models
+
+If you don't see all available OpenAI models in your model selector, you can add them manually.
+
+**Step-by-step:**
+
+1. **Open Settings**
+   - Click your avatar (bottom left)
+   - Select **Settings**
+
+2. **Navigate to Models Management**
+   - Go to **Admin Settings** → **Models**
+   - Or look for **Models** in the settings menu
+
+3. **Add New Model**
+   - Click **+ Add Model** or **New Model** button
+   - Fill in the model details:
+
+**Recommended models to add:**
+
+**GPT-4o (Latest & Best)**
+- **Model ID**: `gpt-4o`
+- **Display Name**: `GPT-4o`
+- **Provider**: OpenAI
+- **Description**: Latest multimodal model, best for most tasks
+
+**GPT-4 Turbo**
+- **Model ID**: `gpt-4-turbo`
+- **Display Name**: `GPT-4 Turbo`
+- **Provider**: OpenAI
+- **Description**: Fast and powerful, good for complex tasks
+
+**O1 Preview (Reasoning Model)**
+- **Model ID**: `o1-preview`
+- **Display Name**: `O1 Preview`
+- **Provider**: OpenAI
+- **Description**: Advanced reasoning capabilities
+
+**O1 Mini**
+- **Model ID**: `o1-mini`
+- **Display Name**: `O1 Mini`
+- **Provider**: OpenAI
+- **Description**: Faster reasoning model
+
+4. **Save** the model configuration
+
+5. **Refresh** the chat page or restart the container if needed:
+   ```bash
+   docker compose restart
+   ```
+
+**Model Favorites:**
+
+- Use the **⭐ (star)** icon next to models in the selector to mark favorites
+- Favorite models appear at the top of your model list
+- Useful when you have many models available
+
+**Why are some models missing?**
+
+1. **API Key Permissions**: Your OpenAI API key may not have access to certain models
+   - Check limits at: https://platform.openai.com/account/limits
+   - Some models (GPT-4, O1) require approval or usage tier upgrades
+
+2. **Cached Model List**: Open WebUI may have cached an old list
+   - Solution: Restart container with `docker compose restart`
+
+3. **Outdated Version**: Update to the latest Open WebUI version:
+   ```bash
+   docker compose pull
+   docker compose up -d
+   ```
+
+**Model Selection Guide:**
+
+| Use Case | Recommended Model | Why |
+|----------|------------------|-----|
+| General tasks, coding, writing | `gpt-4o` | Best balance of speed, quality, and cost |
+| Complex reasoning, math, logic | `o1-preview` | Advanced thinking capabilities |
+| Quick responses, simple tasks | `gpt-3.5-turbo` | Fast and economical |
+| Long documents, analysis | `gpt-4-turbo` | Large context window |
+| Budget-friendly reasoning | `o1-mini` | Cheaper than o1-preview |
+
 ## RAG / Document Q&A Setup
 
 Open WebUI includes built-in RAG capabilities with vector search powered by ChromaDB.
